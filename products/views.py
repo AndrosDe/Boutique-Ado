@@ -8,9 +8,11 @@ from django.db.models.functions import Lower
 from .models import Product, Category
 from .forms import ProductForm
 
+# Create your views here.
+
 
 def all_products(request):
-    ''' A view to show all products, inclusing search queries and sorting '''
+    """ A view to show all products, including sorting and search queries """
 
     products = Product.objects.all()
     query = None
@@ -27,7 +29,6 @@ def all_products(request):
                 products = products.annotate(lower_name=Lower('name'))
             if sortkey == 'category':
                 sortkey = 'category__name'
-
             if 'direction' in request.GET:
                 direction = request.GET['direction']
                 if direction == 'desc':
@@ -58,19 +59,19 @@ def all_products(request):
         'current_sorting': current_sorting,
     }
 
-    return render(request, "products/products.html", context)
+    return render(request, 'products/products.html', context)
 
 
 def product_detail(request, product_id):
-    ''' A view to show individual product details '''
+    """ A view to show individual product details """
 
     product = get_object_or_404(Product, pk=product_id)
 
     context = {
-        'product': product
+        'product': product,
     }
 
-    return render(request, "products/product_detail.html", context)
+    return render(request, 'products/product_detail.html', context)
 
 
 @login_required
@@ -88,7 +89,7 @@ def add_product(request):
             return redirect(reverse('product_detail', args=[product.id]))
         else:
             messages.error(request,
-                            ('Failed to add product. '
+                           ('Failed to add product. '
                             'Please ensure the form is valid.'))
     else:
         form = ProductForm()
